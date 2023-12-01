@@ -40,6 +40,11 @@ let addTask = function() {
         alert("Task to be added should not be empty!");
         return;
     }
+    
+    fetch('/api/log_new_task?new_task=' + encodeURIComponent(taskInput.value), {method: 'POST'})
+        .then(response => response.json())
+        .then(data => console.log('Result:', data.result));
+
     let listItem = createNewTask(taskInput.value);
     incompleteTasks.append(listItem);
     bindTaskEvents(listItem, taskCompleted);
