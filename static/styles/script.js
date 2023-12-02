@@ -40,12 +40,18 @@ let addTask = function() {
         alert("Task to be added should not be empty!");
         return;
     }
-    
-    fetch('/api/log_new_task?new_task=' + encodeURIComponent(taskInput.value), {method: 'POST'})
-        .then(response => response.json())
-        .then(data => console.log('Result:', data.result));
-
     let listItem = createNewTask(taskInput.value);
+
+    fetch('/api/log_task', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ task: taskInput.value, type: 'incomplete' })
+    })
+    .then(response => response.json())
+    .then(data => console.log('Result:', data.result));
+
     incompleteTasks.append(listItem);
     bindTaskEvents(listItem, taskCompleted);
     taskInput.value = "";
@@ -73,9 +79,21 @@ let editTask = function() {
 
     // if the listItem element contains the editMode class
     if (containsClass) {
+        // log
+        fetch('/api/log_task', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ task: listItem.getElementsByTagName('label')[0].textContent + " -> " + editInput.value, type: 'edit' })
+        })
+        .then(response => response.json())
+        .then(data => console.log('Result:', data.result));
+
         //Switch from .editMode
         //label text become the input's value
         label.innerText = editInput.value;
+        
     } else {
         //Switch to .editMode
         //input value becomes the labels text
@@ -88,22 +106,65 @@ let editTask = function() {
 let deleteTask = function() {
     let listItem = this.parentNode;
     let ul = listItem.parentNode;
+
+    fetch('/api/log_task', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ task: listItem.getElementsByTagName('label')[0].textContent, type: 'delete' })
+    })
+    .then(response => response.json())
+    .then(data => console.log('Result:', data.result));
+
     ul.removeChild(listItem);
 }
 
 let taskCompleted = function() {
     let listItem = this.parentNode;
+
+    fetch('/api/log_task', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ task: listItem.getElementsByTagName('label')[0].textContent, type: 'complete' })
+    })
+    .then(response => response.json())
+    .then(data => console.log('Result:', data.result));
+
     completedTasks.appendChild(listItem);
     bindTaskEvents(listItem, taskIncomplete);
 }
 
 let taskIncomplete = function() {
     let listItem = this.parentNode;
+
+    fetch('/api/log_task', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ task: listItem.getElementsByTagName('label')[0].textContent, type: 'incomplete' })
+    })
+    .then(response => response.json())
+    .then(data => console.log('Result:', data.result));
+
     incompleteTasks.appendChild(listItem);
     bindTaskEvents(listItem, taskCompleted);
 }
 
 let clear = function() {
+    fetch('/api/log_task', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ task: 'ALL', type: 'clear' })
+    })
+    .then(response => response.json())
+    .then(data => console.log('Result:', data.result));
+
     incompleteTasks.innerHTML = "";
     completedTasks.innerHTML = "";
 }
