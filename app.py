@@ -8,7 +8,29 @@ completed_tasks = {}
 app = Flask(__name__)
 
 @app.route("/")
-def todo():
+def login():
+    return render_template("login.html")
+
+@app.route("/api/login", methods=['POST'])
+def authenticate():
+    username = request.form['username']
+    password = request.form['password']
+
+    userIsValid = False
+    with open("users.csv", "r") as usersFileReader:
+        usersFileCsvReader = csv.reader(usersFileReader)
+        for user in usersFileCsvReader:
+            if username == user[0] and password == user[1]:
+                userIsValid = True
+                break
+            
+    if userIsValid:
+        return jsonify( { "userIsValid": userIsValid } )
+    else:
+        return jsonify( { "userIsValid": userIsValid } ), 401
+
+@app.route("/index")
+def index():
     return render_template("index.html")
 
 @app.route("/api/log_task", methods=['POST'])
