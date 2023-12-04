@@ -1,3 +1,4 @@
 A simple to-do list application to run on local host
     - creates a log file for each change to a task (along with the timestamp)
     - maintains the state of complete and incomplete tasks (along with the timestamp)
+    - has a login page with authentication
