@@ -1,4 +1,8 @@
 A simple to-do list application to run on local host
-    - creates a log file for each change to a task (along with the timestamp)
-    - maintains the state of complete and incomplete tasks (along with the timestamp)
-    - has a login page with authentication
+    - implements a log-in page with authentication and an add-user page
+    - uses sessions for each user
+    - stores user's to-do list state (i.e. complete and incomplete tasks, along with their timestamp)
+        - loads the state upon login and stores upon logout
+    - creates a log file for each change a user makes to a task (along with the timestamp)
+    - implements dark/light mode
+    - implements effects for add/removing tasks
